@@ -1,4 +1,4 @@
-#include "kalmanfilter.hpp"
+#include "kalmanfilter.h"
 
 KALMAN::KALMAN() {}
 

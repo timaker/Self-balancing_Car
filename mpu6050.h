@@ -1,6 +1,6 @@
 #pragma once
 
-#include "i2c.hpp"
+#include "i2c.h"
 
 #define	SMPLRT_DIV		0x19	
 #define	CONFIG			0x1A	
@@ -31,10 +31,9 @@ public:
     MPU6050(gpio_num_t scl, gpio_num_t sda, i2c_port_t port);
     MPU6050();
     ~MPU6050();
-
+    
     float ay, az, gx;
     float anglex;
-    uint16_t detect_period = 5;
 
     bool init();
 
@@ -48,7 +47,5 @@ public:
 
     short getTemp();
 
-    void start();
-    void stop();
-    void setTime(uint16_t mpu_time);
+    void update();
 };

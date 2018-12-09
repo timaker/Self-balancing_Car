@@ -1,10 +1,8 @@
-#include "mpu6050.hpp"
-#include "kalmanfilter.hpp"
+#include "mpu6050.h"
+#include "kalmanfilter.h"
 #include <cmath>
-#include <Ticker.h>
 
 KALMAN kalman;
-Ticker ticker_mpu;
 
 #define ORIGINAL_OUTPUT (0)
 #define ACC_FULLSCALE (2)
@@ -35,7 +33,7 @@ Ticker ticker_mpu;
 #define AccAxis_Sensitive (1)
 #define GyroAxis_Sensitive (1)
 #endif
- 
+
 MPU6050::MPU6050(gpio_num_t scl, gpio_num_t sda, i2c_port_t port)
 {
     i2c = new I2C(scl, sda, port);
@@ -68,7 +66,7 @@ bool MPU6050::init()
 
 float MPU6050::getAccX()
 {
-    uint8_t r[0];
+    uint8_t r[2];
     i2c->slave_read(MPU6050_ADDR, ACCEL_XOUT_H, r, 2);
     short accx = r[0] << 8 | r[1];
     return (float)accx / AccAxis_Sensitive;
@@ -76,7 +74,7 @@ float MPU6050::getAccX()
 
 float MPU6050::getAccY()
 {
-    uint8_t r[0];
+    uint8_t r[2];
     i2c->slave_read(MPU6050_ADDR, ACCEL_YOUT_H, r, 2);
     short accy = r[0] << 8 | r[1];
     return (float)accy / AccAxis_Sensitive;
@@ -84,7 +82,7 @@ float MPU6050::getAccY()
 
 float MPU6050::getAccZ()
 {
-    uint8_t r[0];
+    uint8_t r[2];
     i2c->slave_read(MPU6050_ADDR, ACCEL_ZOUT_H, r, 2);
     short accz = r[0] << 8 | r[1];
     return (float)accz / AccAxis_Sensitive;
@@ -92,7 +90,7 @@ float MPU6050::getAccZ()
 
 float MPU6050::getGyroX()
 {
-    uint8_t r[0];
+    uint8_t r[2];
     i2c->slave_read(MPU6050_ADDR, GYRO_XOUT_H, r, 2);
     short gyrox = r[0] << 8 | r[1];
     return (float)gyrox / GyroAxis_Sensitive;
@@ -100,7 +98,7 @@ float MPU6050::getGyroX()
 
 float MPU6050::getGyroY()
 {
-    uint8_t r[0];
+    uint8_t r[2];
     i2c->slave_read(MPU6050_ADDR, GYRO_YOUT_H, r, 2);
     short gyroy = r[0] << 8 | r[1];
     return (float)gyroy / GyroAxis_Sensitive;
@@ -108,7 +106,7 @@ float MPU6050::getGyroY()
 
 float MPU6050::getGyroZ()
 {
-    uint8_t r[0];
+    uint8_t r[2];
     i2c->slave_read(MPU6050_ADDR, GYRO_ZOUT_H, r, 2);
     short gyroz = r[0] << 8 | r[1];
     return (float)gyroz / GyroAxis_Sensitive;
@@ -116,7 +114,7 @@ float MPU6050::getGyroZ()
 
 short MPU6050::getTemp()
 {
-    uint8_t r[0];
+    uint8_t r[2];
     i2c->slave_read(MPU6050_ADDR, TEMP_OUT_H, r, 2);
     return r[0] << 8 | r[1];
 }
@@ -127,19 +125,4 @@ void MPU6050::update()
     az = -getAccZ();
     gx = getGyroX();
     anglex = kalman.filter(atan(ay / az) * 57.2958, -gx);
-};
-
-void MPU6050::start()
-{
-    ticker_mpu.attach_ms(detect_period, update);
-}
-
-void MPU6050::stop()
-{
-    ticker_mpu.detach();
-}
-
-void MPU6050::setTime(uint16_t mpu_time)
-{
-    detect_period = mpu_time;
 }

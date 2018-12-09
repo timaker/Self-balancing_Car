@@ -1,12 +1,18 @@
-#include "mpu6050.hpp"
+#include "mpu6050.h"
+#include <Ticker.h>
 
+Ticker ticker_mpu;
 MPU6050 mpu;
+
+void update(){
+  mpu.update();
+}
 
 void setup()
 {
     Serial.begin(115200);
     mpu.init();
-    mpu.start();
+    ticker_mpu.attach_ms(5, update);
 }
 
 void loop()

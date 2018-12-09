@@ -1,4 +1,4 @@
-#include "i2c.hpp"
+#include "i2c.h"
 
 I2C::I2C(gpio_num_t scl, gpio_num_t sda, i2c_port_t port) {
     this -> port = port;
