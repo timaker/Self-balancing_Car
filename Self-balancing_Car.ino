@@ -4,8 +4,9 @@
 Ticker ticker_mpu;
 MPU6050 mpu;
 
-void update(){
-  mpu.update();
+void update()
+{
+    mpu.update();
 }
 
 void setup()
